@@ -1,38 +1,20 @@
-import sql from "mssql";
-import config from "../config";
+import Sequelize from 'sequelize';
+import config from '../config';
 
-const sqlConfig = {
-  user: config.DB_USER,
-  password: config.DB_PWD,
-  database: config.DB_NAME,
-  server: config.DB_HOST,
-  pool: {
-    max: 10,
-    min: 0,
-    idleTimeoutMillis: 30000,
-  },
-  options: {
-    encrypt: true, // for azure
-    trustServerCertificate: true, // change to true for local dev / self-signed certs
-  },
-};
+const sequelize = new Sequelize(config.DB_NAME, config.DB_USER, config.DB_PWD, {
+  host: config.DB_HOST,
+  dialect: 'mssql'
+});
 
-export async function obtenerConexion() {
+export async function validarConexionSQL () {
   try {
-    let pool = await sql.connect(sqlConfig);
-    return pool;
+    await sequelize.authenticate();
+    console.log('Conexión exitosa a la BD Liwakashii');
   } catch (error) {
-    console.error(error);
+    console.error('Al intentar conectar ala BD, se presento el error:', error);
   }
 }
 
-export async function validarConexion() {
-  let pool = await obtenerConexion();
-  let resultado = await pool.request().query("select 1");
-  if (resultado != null) console.log("conectado a la BD");
-  else console.log("no se pudo conectar a la BD");
-}
+validarConexionSQL();
 
-validarConexion();
-
-export {sql}
+export {sequelize}

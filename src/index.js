@@ -1,7 +1,9 @@
-import app from './app'
+import { app } from "./app";
+import { sincronizarModelos } from "./models/sincronizacion";
 
-app.listen(app.get('port'), () => {
-    console.log('servidor iniciado en el puerto', app.get('port'))
-})
+app.listen(app.get("port"), () => {
+  console.log("servidor iniciado en el puerto", app.get("port"));
 
-export default app;
+  /* Actualización de modelos */
+  // sincronizarModelos();
+});
